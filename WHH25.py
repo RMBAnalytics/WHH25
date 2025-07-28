@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -65,19 +64,41 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Logo (provide your own path if needed)
+# Logo
 st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Happy_smiley_face.png/240px-Happy_smiley_face.png", width=100)
 
 st.title("Welcome Happy Hour 2025 Dashboard")
 
+# Show total attendees
+total_attendees = df['Attending'].sum()
+st.metric(label="Total Registered Attendees", value=int(total_attendees))
+
 # City Table
 st.subheader("Attendees by City")
-st.dataframe(city_summary[['City', 'State', 'Attending']].sort_values(by='Attending', ascending=False), use_container_width=True)
+st.dataframe(
+    city_summary[['City', 'State', 'Attending']]
+    .sort_values(by='Attending', ascending=False)
+    .reset_index(drop=True),
+    use_container_width=True,
+    hide_index=True
+)
 
-# US Heat Map
+# US Heat Map with bigger bubbles
 st.subheader("US Heat Map of Attendance")
 map_data = city_summary.dropna(subset=['Latitude', 'Longitude'])
-st.map(map_data.rename(columns={'Latitude': 'lat', 'Longitude': 'lon'})[['lat', 'lon']])
+map_fig = px.scatter_geo(
+    map_data,
+    lat='Latitude',
+    lon='Longitude',
+    scope="usa",
+    size='Attending',
+    hover_name='location',
+    title="Attendance by City",
+    projection="albers usa",
+    template="plotly_white"
+)
+map_fig.update_traces(marker=dict(sizemode='area', sizeref=0.2, sizemin=4))
+st.plotly_chart(map_fig, use_container_width=True)
 
 # Trend Line
 st.subheader("Attendance Over Time")
