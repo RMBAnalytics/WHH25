@@ -50,22 +50,25 @@ date_summary = df.groupby(df['Last Updated'].dt.date)['Attending'].sum().reset_i
 # Streamlit layout
 st.set_page_config(page_title="Welcome Happy Hour Dashboard", layout="wide")
 
-# Custom CSS for purple background and centered logo
+# Custom CSS for dark purple background and centered logo
 st.markdown("""
     <style>
     .main {
-        background-color: #f5f0ff;
+        background-color: #4d1979;
     }
     header {visibility: hidden;}
     footer {visibility: hidden;}
     .block-container {
         padding-top: 2rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
     </style>
 """, unsafe_allow_html=True)
 
-# Logo
-st.image("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6e/Happy_smiley_face.png/240px-Happy_smiley_face.png", width=100)
+# Centered Logo
+st.image("tcu_logo.png", width=150)
 
 st.title("Welcome Happy Hour 2025 Dashboard")
 
@@ -97,7 +100,10 @@ map_fig = px.scatter_geo(
     projection="albers usa",
     template="plotly_white"
 )
-map_fig.update_traces(marker=dict(sizemode='area', sizeref=0.2, sizemin=4))
+map_fig.update_traces(
+    marker=dict(sizemode='area', sizeref=0.2, sizemin=4),
+    hovertemplate='<b>%{hovertext}</b><br>Attending: %{marker.size}<extra></extra>'
+)
 st.plotly_chart(map_fig, use_container_width=True)
 
 # Trend Line
