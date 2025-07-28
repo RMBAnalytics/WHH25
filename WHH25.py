@@ -6,7 +6,7 @@ import pydeck as pdk
 from datetime import datetime
 
 # Load data
-df = pd.read_csv("data.csv")
+df = pd.read_csv("WHH Dashboard 7-28.csv")
 
 # Preprocessing
 df['City'] = df['Welcome Happy Hour 2025 - City Name'].str.extract(r'- (.*)')
